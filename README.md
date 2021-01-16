@@ -22,3 +22,10 @@ pip3 install adafruit-ampy
 
 ampy -p /dev/ttyUSB0 put main.py
 
+
+## ssd1306 code and library from:
+
+https://randomnerdtutorials.com/micropython-oled-display-esp32-esp8266/
+
+## DSP example and some code from:
+

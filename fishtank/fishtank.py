@@ -14,6 +14,7 @@ try:
     import onewire
     import ds18x20
     import gc
+    import passwords
 
     is_esp_device = True
 
@@ -169,7 +170,7 @@ class FishtankWebserver(object):
 
         if not sta_if.isconnected():
             sta_if.active(True)
-            sta_if.connect('na', 'deadbeef')
+            sta_if.connect(passwords.wifi_ssid, passwords.wifi_psk)
 
         while not sta_if.isconnected():
             print("waiting to connect to wifi")

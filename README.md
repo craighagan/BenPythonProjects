@@ -29,3 +29,5 @@ https://randomnerdtutorials.com/micropython-oled-display-esp32-esp8266/
 
 ## DSP example and some code from:
 
+https://randomnerdtutorials.com/micropython-ds18b20-esp32-esp8266/
+

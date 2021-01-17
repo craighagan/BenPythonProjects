@@ -67,6 +67,7 @@ class FishtankWebserver(object):
         self._temp = None
         self._temp_last_updated = time.time()
         self.sensor_refresh_secs = sensor_refresh_secs
+        self.network_info = None
 
     def fahrenheit_to_celsius(self, temp):
         return round(temp * (9 / 5) + 32.0, 2)
@@ -74,7 +75,7 @@ class FishtankWebserver(object):
     @property
     def temp(self):
         now = time.time()
-        delta = self._temp_last_updated - now
+        delta = now - self._temp_last_updated
 
         if self._temp is None or delta > self.sensor_refresh_secs:
             self._temp = self.temp_sensor.get_temperature()
@@ -109,6 +110,10 @@ class FishtankWebserver(object):
     def update_display(self):
         self.oled.text("%0.2fC" % self.temp, 0, 0)
         self.oled.text("%0.2fF" % self.fahrenheit_to_celsius(self.temp), 0, 20)
+
+        if self.network_info:
+            self.oled.text(self.network_info[0], 0, 40)
+
         print("update display")
         self.oled.show()
 
@@ -170,7 +175,8 @@ class FishtankWebserver(object):
             print("waiting to connect to wifi")
             machine.idle()
 
-        return(sta_if.ifconfig())
+        self.network_info = sta_if.ifconfig()
+        return(self.network_info)
 
     def start(self):
         print(self.connect_wifi())

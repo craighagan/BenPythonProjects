@@ -7,6 +7,7 @@ This implements a class to control and present sensor data for a fishtank
 
 import socket
 import time
+import os
 
 try:
     import network
@@ -58,17 +59,20 @@ class FishtankSensor(object):
 
 
 class FishtankWebserver(object):
-    def __init__(self, temp_sensor, oled, port=80, refresh_secs=60, sensor_refresh_secs=30):
+    def __init__(self, temp_sensor, oled, mqtt_client=None,
+                 port=80, refresh_secs=60, sensor_refresh_secs=30,
+                 mqtt_publish_secs=60):
         self.port = port
         self.temp_sensor = temp_sensor
         self.refresh_secs = refresh_secs
-        self.mqtt_publish_secs = 300
+        self.mqtt_publish_secs = mqtt_publish_secs
         self.last_mqtt_publish = 0
         self.oled = oled
         self._temp = None
         self._temp_last_updated = time.time()
         self.sensor_refresh_secs = sensor_refresh_secs
         self.network_info = None
+        self.mqtt_client = mqtt_client
 
     def fahrenheit_to_celsius(self, temp):
         return round(temp * (9 / 5) + 32.0, 2)
@@ -122,7 +126,10 @@ class FishtankWebserver(object):
         cur_time = time.time()
         if cur_time - self.last_mqtt_publish > self.mqtt_publish_secs:
             print("will update mqtt data")
-        self.last_mqtt_publish = cur_time
+            if self.mqtt_client:
+                self.mqtt_client.publish_metric("temperature_F", self.fahrenheit_to_celsius(self.temp))
+
+            self.last_mqtt_publish = cur_time
 
     def handle_requests(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

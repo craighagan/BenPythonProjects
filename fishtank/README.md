@@ -6,6 +6,8 @@ controller. It may work with an ESP8266 as well.
 Right now, only temperature is supported, PH and other
 sensors will be added in future.
 
+This project supports pushing metrics to adafruit IO's mqtt service.
+
 ## Install micropython with esptool
 
 esp8266 example:
@@ -38,10 +40,36 @@ esptool.py --chip esp32 --port /dev/ttyUSB0 write_flash -z 0x1000 ~/Downloads/es
 
 ![circuit diagram](fishtank_bb.png)
 
-## Create Password File
+## Create an Adafruit IO User
 
-FIXME
+Go to https://accounts.adafruit.com/users/sign_up and create an account
 
+Once your account is created, sign in, go to "IO" then click on "My Key". You will need
+the information there for later.
+
+
+## Get Your Adafruit IO Key
+
+## Create webrepl_cfg.py file
+
+Create the file "webrepl_cfg.py" with the following contents:
+
+```
+PASS = '<some password>'
+```
+
+## Create passwords.py File
+
+Create the file "passwords.py" with the following contents, fill in where <> is with the actual value:
+
+```
+wifi_ssid = "<your wireless ssid>"
+wifi_psk = "<your wireless password>"
+
+adafruit_io_url = b"io.adafruit.com"
+adafruit_io_username = b"<your adafruit io username>"
+adafruit_io_key = b"<your adafruit io key>"
+```
 ## upload the code via ampy:
 
 ```
@@ -56,7 +84,11 @@ ampy -p /dev/ttyUSB0 put adafruit_mqtt.py
 ampy -p /dev/ttyUSB0 put boot.py
 ampy -p /dev/ttyUSB0 put main.py
 ```
+# Connecting to your device remotely
 
+If you want to remotely debug your device, you can use http://micropython.org/webrepl/?#<your device's ip address>:8266/ e.g. http://micropython.org/webrepl/?#192.168.1.104:8266/
+
+From there, click "connect", you should get prompted for a password, then you'll see the console output. You can stop execution by pressing Control-C.
 
 # Footnotes/Resources
 

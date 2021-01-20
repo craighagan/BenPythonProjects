@@ -82,6 +82,10 @@ class FishtankWebserver(object):
         now = time.time()
         delta = now - self._temp_last_updated
 
+        if delta < 0:
+            # this shouldn't happen, did time wrap?
+            machine.reset()
+
         if self._temp is None or delta > self.sensor_refresh_secs:
             self._temp = self.temp_sensor.get_temperature()
         return self._temp

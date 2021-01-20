@@ -15,7 +15,7 @@ sta_if.connect(passwords.wifi_ssid, passwords.wifi_psk)
 
 
 while not sta_if.isconnected():
-    pass
+    machine.idle()
 
 webrepl.start()
 

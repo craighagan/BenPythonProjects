@@ -8,6 +8,7 @@ This implements a class to control and present sensor data for a fishtank
 import socket
 import time
 import os
+import random
 
 try:
     import network
@@ -55,7 +56,7 @@ class FishtankSensor(object):
         except Exception as e:
             print(str(e))
 
-        return 0.0
+        return random.uniform(15, 30)
 
 
 class FishtankWebserver(object):
@@ -117,14 +118,19 @@ class FishtankWebserver(object):
         return html
 
     def update_display(self):
+
+        # fill all pixels with color 0
+        self.oled.fill(0)
+
         self.oled.text("%0.2fC" % self.temp, 0, 0)
         self.oled.text("%0.2fF" % self.fahrenheit_to_celsius(self.temp), 0, 20)
 
         if self.network_info:
             self.oled.text(self.network_info[0], 0, 40)
 
-        print("update display")
         self.oled.show()
+
+        print("updated display")
 
     def update_mqtt(self):
         cur_time = time.time()
